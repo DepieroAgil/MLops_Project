@@ -31,7 +31,7 @@ jobs:
         python retrain_model.py  # Menjalankan skrip retrain_model.py yang berisi training dan evaluasi model
 
     - name: Upload the trained model to GitHub
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3  # Ganti dengan versi terbaru
       with:
         name: trained-model
         path: model.pkl  # Menyimpan model yang sudah dilatih dan disimpan di model.pkl
