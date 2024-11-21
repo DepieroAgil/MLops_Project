@@ -1,0 +1,45 @@
+name: CI/CD Pipeline for Credit Card Fraud Detection
+
+on:
+  push:
+    branches:
+      - main  # Jalankan workflow setiap kali ada push ke branch 'main'
+  pull_request:
+    branches:
+      - main  # Jalankan workflow saat ada pull request ke branch 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Menjalankan pipeline di Ubuntu
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2  # Memeriksa kode dari repository
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'  # Menentukan versi Python yang digunakan
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # Install dependencies dari file requirements.txt
+
+    - name: Run model training and evaluation
+      run: |
+        python retrain_model.py  # Menjalankan skrip retrain_model.py yang berisi training dan evaluasi model
+
+    - name: Upload the trained model to GitHub
+      uses: actions/upload-artifact@v2
+      with:
+        name: trained-model
+        path: model.pkl  # Menyimpan model yang sudah dilatih dan disimpan di model.pkl
+
+    - name: Commit and push model back to GitHub
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add model.pkl
+        git commit -m "Update model"
+        git push
